@@ -1,0 +1,60 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.py.class
+
+# --- Django / Project Files ---
+*.sqlite3
+db.sqlite3
+.env
+*.env
+.env.*
+local_settings.py
+settings_local.py
+
+# --- Virtual environment ---
+venv/
+env/
+ENV/
+.venv/
+
+# --- Logs and temp files ---
+*.log
+*.pot
+*.mo
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# --- IDE / Editor files ---
+.vscode/
+.idea/
+*.iml
+
+# --- System files ---
+.DS_Store
+Thumbs.db
+
+# --- Static / media (optional if you collectstatic) ---
+staticfiles/
+media/
+
+# --- Node (if using React/Vue frontend) ---
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# --- Python packaging ---
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# --- Coverage / testing ---
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
