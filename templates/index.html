@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}
+    Home
+{% endblock title %}
+{% block body %}
+
+<!-- Hero Section Start -->
+<div class="container-fluid pt-5">
+    <div class="row align-items-center">
+        <!-- Left Side: Image -->
+        <div class="col-md-6 p-0">
+            <img class="w-100 img-fluid" src="/static/f3.jpg" alt="SkillNexus" style="height: 700px; object-fit: cover;">
+        </div>
+        
+        <!-- Right Side: Text & CTA -->
+        <div class="col-md-6 d-flex flex-column justify-content-center align-items-center text-center p-5">
+            <h1 class="text-dark text-uppercase mb-3" id="dynamic-heading"></h1>
+            <h4 class="text-dark mb-4">Find the most compatible people to work with</h4>
+            <p class="text-muted">
+                SkillNexus helps professionals and freelancers connect with the right partners, enabling seamless collaboration and innovation.
+            </p>
+            <div>
+                <a href="register.jsp" class="btn btn-primary py-md-3 px-md-5 mt-2">Join Now</a>
+                <a href="#info-cards" class="btn btn-outline-primary py-md-3 px-md-5 mt-2" id="learn-more-btn">Learn More</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Hero Section End -->
+
+<!-- Information Cards Section Start -->
+<div class="container mt-5 pb-3" id="info-cards">
+    <div class="row">
+        <!-- Card 1 -->
+        <div class="col-md-4">
+            <div class="card text-center shadow-lg p-3">
+                <img class="card-img-top" src="/static/a1.jpg" alt="Welcome to SkillNexus">
+                <div class="card-body">
+                    <h3 class="card-title">Welcome to SkillNexus</h3>
+                    <p class="card-text">
+                        Discover a platform designed to help you connect with like-minded professionals and freelancers.
+                        Whether you're a startup founder, a developer, or a designer, SkillNexus ensures you find the right people to collaborate with.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="col-md-4">
+            <div class="card text-center shadow-lg p-3">
+                <img class="card-img-top" src="/static/a2.jpg" alt="Build Your Dream Team">
+                <div class="card-body">
+                    <h3 class="card-title">Build Your Dream Team</h3>
+                    <p class="card-text">
+                        Assemble a team that aligns perfectly with your goals. Our smart matching system analyzes skills, interests, and work preferences 
+                        to connect you with the best collaborators in your industry.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="col-md-4">
+            <div class="card text-center shadow-lg p-3">
+                <img class="card-img-top" src="/static/deals2.jpg" alt="Grow Your Network">
+                <div class="card-body">
+                    <h3 class="card-title">Grow Your Network</h3>
+                    <p class="card-text">
+                        Expand your professional network effortlessly. Attend virtual meetups, collaborate on projects, and gain exposure in your field.
+                        SkillNexus empowers you to connect with top talent worldwide.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Information Cards Section End -->
+
+<script>
+    // Typing Effect for Headings
+    const headings = [
+        "Welcome to SkillNexus",
+        "Build Your Dream Team",
+        "Grow Your Network with SkillNexus"
+    ];
+    
+    let index = 0;
+    let charIndex = 0;
+    const headingElement = document.getElementById("dynamic-heading");
+
+    function typeHeading() {
+        if (charIndex < headings[index].length) {
+            headingElement.innerHTML += headings[index].charAt(charIndex);
+            charIndex++;
+            setTimeout(typeHeading, 100); // Typing speed
+        } else {
+            setTimeout(eraseHeading, 2000); // Wait before erasing
+        }
+    }
+
+    function eraseHeading() {
+        if (charIndex > 0) {
+            headingElement.innerHTML = headings[index].substring(0, charIndex - 1);
+            charIndex--;
+            setTimeout(eraseHeading, 50); // Erasing speed
+        } else {
+            index = (index + 1) % headings.length;
+            setTimeout(typeHeading, 500); // Wait before typing new heading
+        }
+    }
+
+    // Start typing effect on page load
+    setTimeout(typeHeading, 500);
+
+    // Smooth Scroll Effect for "Learn More" Button
+    document.getElementById("learn-more-btn").addEventListener("click", function(event) {
+        event.preventDefault(); // Prevent default link behavior
+        document.querySelector("#info-cards").scrollIntoView({
+            behavior: "smooth"
+        });
+    });
+</script>
+
+{% endblock body %}

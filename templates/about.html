@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %} About {% endblock title %}
+
+{% block body %}
+<!-- About Section Start -->
+<div class="container-fluid pb-3">
+    <div class="container pt-5">
+        <div class="row align-items-center">
+            <!-- Left Content: Image with Animation -->
+            <div class="col-lg-6 wow fadeInLeft" data-wow-delay="0.2s" style="min-height: 500px;">
+                <div class="position-relative h-100">
+                    <img class="img-fluid w-100 rounded shadow-lg" src="/static/f2.jpg" style="object-fit: cover;">
+                </div>
+            </div>
+            
+            <!-- Right Content: Description -->
+            <div class="col-lg-6 wow fadeInRight" data-wow-delay="0.4s">
+                <div class="about-text bg-white p-4 p-lg-5 rounded shadow-sm">
+                    <h6 class="text-primary text-uppercase mb-3" style="letter-spacing: 5px;">About SkillNexus</h6>
+                    <h1 class="mb-4">Connecting Talent with Opportunity</h1>
+                    <p class="text-justify">SkillNexus is a dynamic platform designed to bridge the gap between professionals and opportunities. Whether you're looking for career advancement, networking, or meaningful collaborations, SkillNexus provides a smart ecosystem that connects individuals with industry experts, organizations, and like-minded professionals.</p>
+                    <p class="text-justify">Our goal is to empower individuals with the tools they need to showcase their skills, build strong networks, and access tailored career opportunities. By leveraging advanced algorithms and AI-driven matchmaking, we ensure that users find the most relevant engagements based on their expertise and interests.</p>
+                    
+                    <!-- Feature Icons -->
+                    <div class="row mt-4">
+                        <div class="col-md-6 mb-3 wow fadeInUp" data-wow-delay="0.6s">
+                            <i class="fa fa-users text-primary fa-2x"></i>
+                            <h5 class="mt-2">Professional Networking</h5>
+                            <p>Connect with professionals across industries and grow your network.</p>
+                        </div>
+                        <div class="col-md-6 mb-3 wow fadeInUp" data-wow-delay="0.8s">
+                            <i class="fa fa-briefcase text-primary fa-2x"></i>
+                            <h5 class="mt-2">Career Growth</h5>
+                            <p>Find job opportunities, internships, and skill-based projects tailored for you.</p>
+                        </div>
+                        <div class="col-md-6 mb-3 wow fadeInUp" data-wow-delay="1s">
+                            <i class="fa fa-lightbulb text-primary fa-2x"></i>
+                            <h5 class="mt-2">Skill Development</h5>
+                            <p>Access learning resources and mentorship programs to enhance your skills.</p>
+                        </div>
+                        <div class="col-md-6 mb-3 wow fadeInUp" data-wow-delay="1.2s">
+                            <i class="fa fa-handshake text-primary fa-2x"></i>
+                            <h5 class="mt-2">Collaborations</h5>
+                            <p>Engage in innovative projects and build strategic partnerships.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- About Section End -->
+
+<!-- Including WOW.js for animations -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+<script>
+    new WOW().init();
+</script>
+{% endblock body %}
