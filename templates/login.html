@@ -1,0 +1,81 @@
+{% extends 'base.html' %}  
+
+{% block title %}Login{% endblock title %}
+
+{% block body %}
+
+<div class="container d-flex justify-content-center align-items-center py-5" 
+     style="min-height: 100vh; padding: 60px;">
+    
+    <div class="row w-100 d-flex justify-content-center align-items-center">
+        <!-- Login Description -->
+        <div class="col-md-5 text-center p-4 shadow-lg rounded bg-white d-flex flex-column justify-content-center">
+            <h1 class="fw-bold">Welcome Back!</h1>
+            <p class="fs-5">
+                Sign in to stay connected and continue your journey with us. Access your personalized 
+                dashboard, engage with the community, and explore exclusive features available only 
+                to our members. 
+                <br><br>
+                Don't have an account? <a href="{% url 'signup' %}" class="text-primary">Sign up here.</a>
+            </p>
+        </div>
+
+        <!-- Decorative Divider -->
+        <div class="col-md-1 d-flex justify-content-center align-items-center">
+            <div class="mx-auto" style="width: 5px; height: 80%; background: #007bff; border-radius: 10px;"></div>
+        </div>
+
+        <!-- Login Form -->
+        <div class="col-md-5 px-4 py-4 shadow-lg rounded bg-light d-flex flex-column justify-content-center">
+            <h2 class="text-center text-primary mb-4">Sign In</h2>
+
+            <!-- Display Error Messages -->
+            <!-- Modal -->
+            <div class="modal fade" id="loginErrorModal" tabindex="-1" aria-labelledby="loginErrorLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-danger">
+                    <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="loginErrorLabel">Login Failed</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                    {% for message in messages %}
+                        <p class="mb-0">{{ message }}</p>
+                    {% endfor %}
+                    </div>
+                </div>
+                </div>
+            </div>
+            
+            {% if messages %}
+                <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    var errorModal = new bootstrap.Modal(document.getElementById('loginErrorModal'));
+                    errorModal.show();
+                });
+                </script>
+            {% endif %}
+  
+
+            <form method="POST" action="{% url 'login' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="username" class="form-label">Email</label>
+                    <input type="text" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Login</button>
+            </form>
+
+            <p class="text-center mt-3">
+                <a href="#" class="text-primary">Forgot password?</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+
+{% endblock body %}
