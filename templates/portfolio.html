@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Portfolio{% endblock title %}
+
+{% block body %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const input = document.getElementById("skillsInput");
+    const tags = document.querySelectorAll(".skill-tag");
+
+    let currentSkills = input.value.split(',').map(s => s.trim()).filter(s => s !== "");
+
+    function updateInputField() {
+      input.value = currentSkills.join(", ");
+    }
+
+    tags.forEach(tag => {
+      const skill = tag.textContent.trim();
+      if (currentSkills.includes(skill)) {
+        tag.classList.remove("bg-secondary");
+        tag.classList.add("bg-primary");
+      }
+
+      tag.addEventListener("click", function () {
+        if (currentSkills.includes(skill)) {
+          currentSkills = currentSkills.filter(s => s !== skill);
+          tag.classList.remove("bg-primary");
+          tag.classList.add("bg-secondary");
+        } else {
+          currentSkills.push(skill);
+          tag.classList.remove("bg-secondary");
+          tag.classList.add("bg-primary");
+        }
+        updateInputField();
+      });
+    });
+  });
+</script>
+
+<div class="container my-3">
+  <h2 class="mb-4 text-center text-primary">Welcome, {{ profile.user.first_name|capfirst }} {{ profile.user.last_name|capfirst }}</h2>
+
+  <div class="row g-4">
+    <!-- Profile Column -->
+    <div class="col-md-4">
+      <div class="card shadow-lg border-light">
+        <div class="card-body text-center">
+          {% if profile.profile_picture %}
+            <img src="{{ profile.profile_picture.url }}" class="rounded-circle mb-3" width="150" height="150" alt="Profile Picture">
+          {% else %}
+            <img src="https://via.placeholder.com/150" class="rounded-circle mb-3" alt="No Image">
+          {% endif %}
+
+          <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label class="form-label">Change Profile Picture</label>
+              <input type="file" class="form-control" name="profile_picture">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" value="{{ profile.user.email }}" readonly />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">User Type</label>
+              <input type="text" class="form-control" value="{{ profile.user.user_type }}" readonly />
+            </div>
+
+            {% if profile.user.user_type == 'organization' %}
+              <div class="mb-3">
+                <label class="form-label">Company Name</label>
+                <input type="text" class="form-control" name="company_name" value="{{ profile.company_name }}">
+              </div>
+            {% endif %}
+
+            <div class="mb-3">
+              <label class="form-label">Bio</label>
+              <textarea class="form-control" name="bio" rows="3">{{ profile.bio }}</textarea>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Website</label>
+              <input type="url" class="form-control" name="website" value="{{ profile.website }}">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Industry</label>
+              <input type="text" class="form-control" name="industry" value="{{ profile.industry }}">
+            </div>
+
+            {% if profile.user.user_type == 'freelancer' %}
+              <div class="mb-3">
+                <label class="form-label">LinkedIn URL</label>
+                <input type="url" class="form-control" name="linkedin" value="{{ profile.social_links.linkedin|default_if_none:'' }}">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">GitHub URL</label>
+                <input type="url" class="form-control" name="github" value="{{ profile.social_links.github|default_if_none:'' }}">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Skills</label>
+                <input type="text" class="form-control" id="skillsInput" name="skills" value="{% if skill_names %}{{ skill_names|join:", " }}{% endif %}">
+                <div class="mt-2">
+                  {% for skill in skills_list %}
+                    <span class="badge bg-secondary skill-tag me-1 mb-1" style="cursor:pointer;">{{ skill }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary w-100">Update Profile</button>
+            <form method="POST" action="{% url 'delete_profile' %}" onsubmit="return confirm('Are you sure you want to delete your profile? This action cannot be undone.');">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger w-100" style="margin-top:4px;">Delete Profile</button>
+            </form>
+          </form>
+          
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column (Experience / Projects / Posts) -->
+    <div class="col-md-8">
+      {% if profile.user.user_type == 'freelancer' %}
+        <!-- Experience Section -->
+        <div class="card shadow-lg mb-4">
+          <div class="card-body">
+            <h4 class="card-title d-flex justify-content-between align-items-center">
+              Experiences
+              <a href="{% url 'add_experience' %}" class="btn btn-sm btn-outline-primary">Add</a>
+            </h4>
+            {% if experiences %}
+              <div class="row row-cols-1 g-3">
+                {% for exp in experiences %}
+                  <div class="col">
+                    <div class="card shadow-sm">
+                      <div class="card-body">
+                        <h5 class="card-title">{{ exp.role }} at {{ exp.organization }}</h5>
+                        <p><strong>Years:</strong> {{ exp.years }}</p>
+                        <p>{{ exp.details }}</p>
+                        <div class="mt-2 d-flex gap-2">
+                          <a href="{% url 'edit_experience' exp.id %}" class="btn btn-sm btn-warning">Edit</a>
+                          <a href="{% url 'delete_experience' exp.id %}" class="btn btn-sm btn-danger">Delete</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <p class="text-muted">No experiences added.</p>
+            {% endif %}
+          </div>
+        </div>
+      {% elif profile.user.user_type == 'organization' %}
+        <!-- Projects Section -->
+        <div class="card shadow-lg mb-4">
+          <div class="card-body">
+            <h4 class="card-title d-flex justify-content-between align-items-center">
+              Current Projects
+              <a href="{% url 'add_project' %}" class="btn btn-sm btn-outline-primary">Add</a>
+            </h4>
+            {% if projects %}
+              <div class="row row-cols-1 g-3">
+                {% for project in projects %}
+                  <div class="col">
+                    <div class="card shadow-sm">
+                      <div class="card-body">
+                        <p><strong>Description:</strong> {{ project.project_description }}</p>
+                        <p><strong>Terms:</strong> {{ project.terms_of_contract }}</p>
+                        <p><strong>Required Skills:</strong>
+                          {% for skill in project.required_skills.all %}
+                            <span class="badge bg-secondary">{{ skill.name }}</span>
+                          {% empty %}
+                            <span class="text-muted">None</span>
+                          {% endfor %}
+                        </p>
+                        <p><strong>Status:</strong> {{ project.get_status_display }}</p>
+                        <p><strong>Collaborators:</strong>
+                          {% if project.collaborators.all %}
+                            {% for collaborator in project.collaborators.all %}
+                              <span class="badge bg-success">{{ collaborator.get_full_name }}</span>
+                            {% endfor %}
+                          {% else %}
+                            <span class="text-muted">None</span>
+                          {% endif %}
+                        </p>
+                        <div class="mt-2 d-flex gap-2">
+                          <a href="{% url 'edit_project' project.id %}" class="btn btn-sm btn-warning">Edit</a>
+                          <form method="POST" action="{% url 'delete_project' project.id %}" onsubmit="return confirm('Are you sure?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <p class="text-muted">No current projects listed.</p>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+
+      <!-- Posts Section -->
+      <div class="card shadow-lg mb-4">
+        <div class="card-body">
+          <h4 class="card-title d-flex justify-content-between align-items-center">
+            Your Posts
+            <a href="{% url 'create_post' %}" class="btn btn-sm btn-success">Create Post</a>
+          </h4>
+          {% if user_posts %}
+            <div class="list-group">
+              {% for post in user_posts %}
+                <div class="list-group-item position-relative">
+                  <div class="d-flex justify-content-between">
+                    <div>
+                      <h5>{{ post.title }}</h5>
+                      <p class="mb-1">{{ post.content|truncatewords:30 }}</p>
+                      <small class="text-muted">{{ post.created_at|date:"F j, Y, g:i a" }}</small>
+                    </div>
+                    <div class="dropdown">
+                      <button class="btn btn-sm" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
+                      <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a href="{% url 'edit_post' post.id %}" class="dropdown-item">Edit</a></li>
+                        <li>
+                          <form method="POST" action="{% url 'delete_post' post.id %}" onsubmit="return confirm('Delete this post?');">
+                            {% csrf_token %}
+                            <button class="dropdown-item text-danger" type="submit">Delete</button>
+                          </form>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p class="text-muted">No posts to display.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
