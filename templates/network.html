@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Network{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="text-center mb-5">Your Network</h1>
+
+    <div class="row">
+        {% if connections %}
+            {% for connection in connections %}
+                <div class="col-md-12 mb-4">
+                    <div class="card shadow-lg border-light">
+                        <div class="card-body d-flex align-items-center justify-content-between">
+                            <!-- User Info Section -->
+                            <div class="user-info">
+                                <h5 class="card-title">{{ connection.first_name|capfirst }} {{ connection.last_name|capfirst }}</h5>
+                                <p class="card-text text-muted" style="font-size: 0.9rem;">{{ connection.user_type|capfirst }}</p>
+                            </div>
+
+                            <!-- Action Buttons Section -->
+                            <div class="actions d-flex gap-3">
+                                <a href="{% url 'connection_profile' connection.id %}" class="btn btn-primary btn-hover">View Profile</a>
+                                <a href="{% url 'remove_connection' connection.id %}" class="btn btn-danger btn-hover">Remove Connection</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-center">You have no connections yet. Start connecting!</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
