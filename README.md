@@ -1,4 +1,4 @@
-Bridging Freelancing Talent with Organizations
+#Bridging Freelancing Talent with Organizations
 
 SkillNexus is a web platform designed to connect freelancers with organizations through intelligent project matching, portfolio management, social engagement, networking, and collaboration tracking.
 
