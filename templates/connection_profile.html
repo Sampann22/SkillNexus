@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ target_user.first_name }}'s Profile{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+
+  <!-- Header Section -->
+  <div class="row mb-4">
+    <div class="col-md-3 text-center">
+      {% if profile.profile_picture %}
+        <img src="{{ profile.profile_picture.url }}" class="rounded-circle mb-3" width="150" height="150" alt="Profile Picture">
+      {% else %}
+        <img src="https://via.placeholder.com/150" class="rounded-circle mb-3" alt="No Image">
+      {% endif %}
+    </div>
+    <div class="col-md-9 align-self-center">
+      <h2 class="fw-bold d-inline">{{ target_user.first_name|capfirst }} {{ target_user.last_name|capfirst }}</h2>
+      <div class="mt-2">
+        <span class="badge bg-info text-dark text-uppercase">{{ target_user.user_type }}</span>
+      </div>
+      {% if profile.industry %}
+        <p class="mt-2"><i class="bi bi-briefcase-fill me-2"></i><strong>Industry:</strong> {{ profile.industry }}</p>
+      {% endif %}
+      {% if is_connected %}
+        <a href="{% url 'remove_connection' target_user.id %}" class="btn btn-outline-danger btn-sm">Remove from Network</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Bio, Email -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      {% if profile.bio %}
+        <p class="mb-2"><i class="bi bi-person-lines-fill me-2"></i><strong>Bio:</strong> {{ profile.bio }}</p>
+      {% endif %}
+      <p class="mb-2"><i class="bi bi-envelope-fill me-2"></i><strong>Email:</strong> {{ target_user.email }}</p>
+      {% if skills %}
+      <p class="mb-2">
+        <i class="bi bi-lightning-fill me-2"></i><strong>Skills:</strong>
+        {% for skill in skills %}
+          <span class="badge bg-primary me-1 mb-1">{{ skill }}</span>
+        {% endfor %}
+      </p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Posts Section -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h5 class="card-title"><i class="bi bi-chat-dots-fill me-2"></i>Recent Posts</h5>
+      {% if posts %}
+        <ul class="list-group list-group-flush">
+          {% for post in posts %}
+            <li class="list-group-item">
+              <h6 class="fw-bold">{{ post.title }}</h6>
+              <p>{{ post.content|truncatewords:25 }}</p>
+              <small class="text-muted">Posted on {{ post.created_at|date:"F j, Y" }}</small>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-muted">No posts available.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Freelancer Experience -->
+  {% if target_user.user_type == 'freelancer' %}
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h5 class="card-title"><i class="bi bi-briefcase-fill me-2"></i>Experiences</h5>
+        {% if experiences %}
+          <div class="row row-cols-1 row-cols-md-2 g-3">
+            {% for exp in experiences %}
+              <div class="col">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h6 class="fw-bold">{{ exp.role }}</h6>
+                    <p><strong>Organization:</strong> {{ exp.organization }}</p>
+                    <p><strong>Years:</strong> {{ exp.years }}</p>
+                    <p>{{ exp.details }}</p>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-muted">No experiences to show.</p>
+      {% endif %}
+      </div>
+    </div>
+  {% endif %}
+    <!-- Your Collaborations Section -->
+    {% if collaborations %}
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h5 class="card-title"><i class="bi bi-people-fill me-2"></i>Projects with {{ target_user.first_name|capfirst }} {{ target_user.last_name|capfirst }}</h5>
+        <div class="row row-cols-1 row-cols-md-2 g-3">
+          {% for project in collaborations %}
+            <div class="col">
+              <div class="card h-100">
+                <div class="card-body">
+                  <h6 class="fw-bold">{{ project }}</h6>
+                  <p><strong>Description:</strong> {{ project.project_description }}</p>
+                  <p><strong>Status:</strong> {{ project.get_status_display }}</p>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+ 
+
+  <!-- Organization Projects -->
+  {% if target_user.user_type == 'organization' %}
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h5 class="card-title"><i class="bi bi-kanban-fill me-2"></i>Current Projects</h5>
+      {% if projects %}
+        <div class="row row-cols-1 row-cols-md-2 g-3">
+          {% for project in projects %}
+            <div class="col">
+              <div class="card h-100">
+                <div class="card-body">
+                  <p><strong>Description:</strong> {{ project.project_description }}</p>
+                  <p><strong>Terms:</strong> {{ project.terms_of_contract }}</p>
+                  <p><strong>Status:</strong> {{ project.status }}</p>
+                  <p><strong>Required Skills:</strong><br>
+                    {% for skill in project.required_skills.all %}
+                      <span class="badge bg-secondary me-1 mb-1">{{ skill.name }}</span>
+                    {% endfor %}
+                  </p>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-muted">No current projects available.</p>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Match Requests{% endblock title %}
+
+{% block body %}
+<div class="container my-5">
+  <h2 class="mb-4 text-primary fw-bold">Incoming Match Requests</h2>
+
+  {% if match_requests %}
+    <div class="row g-4">
+      {% for request in match_requests %}
+        <div class="col-12">
+          <div class="card shadow-sm border-0 rounded-4 hover-shadow transition p-4" style="transition: 0.3s ease;">
+            <div class="d-flex justify-content-between align-items-start flex-wrap">
+
+              <!-- Details Section -->
+              <div class="mb-2">
+                <h5 class="card-title mb-2">Project: 
+                  <span class="text-muted">{{ request.project.project_description|truncatewords:10 }}</span>
+                </h5>
+                <p class="mb-1"><strong>Freelancer:</strong> {{ request.freelancer.first_name }} {{ request.freelancer.last_name }} ({{ request.freelancer.email }})</p>
+                <p class="mb-0"><strong>Status:</strong> 
+                  {% if request.status == "pending" %}
+                    <span class="badge bg-warning text-dark">Pending</span>
+                  {% elif request.status == "accepted" %}
+                    <span class="badge bg-success">Accepted</span>
+                  {% else %}
+                    <span class="badge bg-danger">Rejected</span>
+                  {% endif %}
+                </p>
+              </div>
+
+              <!-- Actions Section -->
+              {% if request.status == "pending" %}
+              <div class="d-flex gap-2">
+                <form method="POST" action="{% url 'respond_match_request' request.id %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="accept" />
+                  <button class="btn btn-outline-success btn-sm transition" type="submit">Accept</button>
+                </form>
+                <form method="POST" action="{% url 'respond_match_request' request.id %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="reject" />
+                  <button class="btn btn-outline-danger btn-sm transition" type="submit">Reject</button>
+                </form>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-muted">No match requests yet.</p>
+  {% endif %}
+</div>
+
+<style>
+  .hover-shadow:hover {
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.1) !important;
+    transform: translateY(-3px);
+  }
+  .transition {
+    transition: all 0.3s ease-in-out;
+  }
+  .btn:hover {
+    transform: scale(1.05);
+  }
+</style>
+{% endblock body %}

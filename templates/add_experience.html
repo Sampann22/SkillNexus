@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body p-5">
+          <h2 class="text-center mb-4">{{ title }}</h2>
+          
+          <form method="post" novalidate>
+            {% csrf_token %}
+
+            <div class="form-floating mb-4">
+              {{ form.organization|as_widget(attrs={"class": "form-control", "placeholder": "Organization"}) }}
+              <label for="{{ form.organization.id_for_label }}">Organization</label>
+              {% if form.organization.errors %}
+                <div class="text-danger small">{{ form.organization.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="form-floating mb-4">
+              {{ form.role|as_widget(attrs={"class": "form-control", "placeholder": "Role"}) }}
+              <label for="{{ form.role.id_for_label }}">Role</label>
+              {% if form.role.errors %}
+                <div class="text-danger small">{{ form.role.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="form-floating mb-4">
+              {{ form.duration_years|as_widget(attrs={"class": "form-control", "placeholder": "Years"}) }}
+              <label for="{{ form.duration_years.id_for_label }}">Duration (Years)</label>
+              {% if form.duration_years.errors %}
+                <div class="text-danger small">{{ form.duration_years.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="form-floating mb-4">
+              {{ form.details|as_widget(attrs={"class": "form-control", "placeholder": "Details", "style": "height: 150px;"}) }}
+              <label for="{{ form.details.id_for_label }}">Details</label>
+              {% if form.details.errors %}
+                <div class="text-danger small">{{ form.details.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-success btn-lg">Save Experience</button>
+              <a href="{% url 'portfolio' %}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+{% load form_tags %}
+
+{% block title %}{{ heading|default:"Create Post" }}{% endblock title %}
+
+{% block body %}
+<div class="container my-5">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h3 class="card-title mb-4">{{ heading|default:"Create a New Post" }}</h3>
+
+      <form method="POST">
+        {% csrf_token %}
+
+        <div class="mb-3">
+          <label for="id_title" class="form-label">Title</label>
+          {{ form.title|add_class:"form-control" }}
+          {% if form.title.errors %}
+            <div class="text-danger small">
+              {% for error in form.title.errors %}{{ error }}{% endfor %}
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="mb-3">
+          <label for="id_content" class="form-label">Content</label>
+          {{ form.content|add_class:"form-control" }}
+          {% if form.content.errors %}
+            <div class="text-danger small">
+              {% for error in form.content.errors %}{{ error }}{% endfor %}
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="d-flex justify-content-between">
+          <a href="{% url 'portfolio' %}" class="btn btn-secondary">Cancel</a>
+          <button type="submit" class="btn btn-primary">
+            {% if is_edit %}Update{% else %}Post{% endif %}
+          </button>
+          
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock body %}

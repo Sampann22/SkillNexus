@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %} Project Details {% endblock title%}
+{% block body %}
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<!-- jQuery (needed by Select2) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  
+<div class="container py-5">
+    <h2 class="mb-4">{{ project|default_if_none:"Add New" }} Project</h2>
+
+    <form method="POST" action="">
+        {% csrf_token %}
+          <div class="mb-3">
+            {{ form.project_description.label_tag }}
+            {{ form.project_description }}
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Required Skills</label>
+            <input type="text" class="form-control" id="requiredSkillsInput" name="required_skills"
+            value="{% if required_skill_names %}{{ required_skill_names|join:', ' }}{% endif %}" />
+            <div id="required-skill-tags" class="mt-2">
+              {% for skill in skills_list %}
+                <span class="badge bg-secondary skill-tag" style="cursor:pointer; margin: 3px;">{{ skill }}</span>
+              {% endfor %}
+            </div>
+          </div>
+          
+          
+          <script>
+            document.addEventListener("DOMContentLoaded", function () {
+              const tags = document.querySelectorAll(".required-skill-tag");
+              const input = document.getElementById("requiredSkillsInput");
+          
+              tags.forEach(tag => {
+                tag.addEventListener("click", () => {
+                  let current = input.value.split(",").map(s => s.trim()).filter(s => s);
+                  if (!current.includes(tag.textContent)) {
+                    current.push(tag.textContent);
+                    input.value = current.join(", ");
+                  }
+                });
+              });
+            });
+          </script>
+          <script>
+            document.addEventListener("DOMContentLoaded", function () {
+              const tags = document.querySelectorAll("#required-skill-tags .skill-tag");
+              const input = document.getElementById("requiredSkillsInput");
+          
+              let currentSkills = [];
+          
+              function updateInput() {
+                input.value = currentSkills.join(", ");
+              }
+          
+              tags.forEach(tag => {
+                tag.addEventListener("click", function () {
+                  const skill = tag.textContent.trim();
+                  if (currentSkills.includes(skill)) {
+                    currentSkills = currentSkills.filter(s => s !== skill);
+                    tag.classList.remove("bg-primary");
+                    tag.classList.add("bg-secondary");
+                  } else {
+                    currentSkills.push(skill);
+                    tag.classList.remove("bg-secondary");
+                    tag.classList.add("bg-primary");
+                  }
+                  updateInput();
+                });
+              });
+            });
+          </script>
+    
+          <div class="mb-3">
+              {{ form.terms_of_contract.label_tag }}
+              {{ form.terms_of_contract }}
+          </div>
+          <div class="mb-3">
+            <label for="id_status" class="form-label">Project Status</label>
+            {{ form.status }}
+          </div>
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-success">
+                {% if project in projects %} Update Project {% else %} Add Project {% endif %}
+            </button>
+
+            {% if project %}
+                <a href="{% url 'delete_project' project.id %}" class="btn btn-danger"
+                   onclick="return confirm('Are you sure you want to delete this project?');">
+                    Delete
+                </a>
+            {% endif %}
+            {% if form.errors %}
+              <div class="alert alert-danger">
+                <ul>
+                  {% for field in form %}
+                    {% for error in field.errors %}
+                      <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                    {% endfor %}
+                  {% endfor %}
+                  {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+
+        </div>
+    </form>
+</div>
+
+{% endblock body %}
